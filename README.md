@@ -8,6 +8,7 @@ validated against blind human labels (H1 accuracy, H2 screen ranking).
 
 ```
 architecture/   Tech stack + deployment diagram (tech-stack.drawio — open in draw.io)
+notebooks/      Prototyping notebooks (YOLO detection + pose → footfall / dwell / facing)
 schema/         PostgreSQL schema.sql, seed.sql and ER diagram (er-diagram.drawio)
 web/            Next.js dashboard (currently on mock data)
 ```
