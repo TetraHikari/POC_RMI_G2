@@ -18,13 +18,13 @@ export function BarList({ rows, color = "var(--series-1)", unitLabel }: { rows: 
       {rows.map((r) => (
         <div
           key={r.label}
-          className="hover:bg-hover grid grid-cols-[minmax(6rem,9rem)_1fr] items-center gap-3 rounded px-1 py-1.5"
+          className="hover:bg-hover grid grid-cols-[minmax(4.5rem,7rem)_1fr] items-center gap-3 rounded-lg px-1 py-2"
           onMouseMove={(e) => show(e, <TipRow label={r.detail ?? r.label} value={`${r.display}${unitLabel ? ` ${unitLabel}` : ""}`} />)}
         >
           <span className="text-ink-2 truncate text-right text-xs">{r.label}</span>
           <div className="flex items-center gap-2">
-            <div className="h-3.5 rounded-r" style={{ width: `${(r.value / max) * 82}%`, background: color, minWidth: 2 }} />
-            <span className="text-ink-2 tabular text-xs">{r.display}</span>
+            <div className="h-2.5 rounded-full" style={{ width: `${(r.value / max) * 80}%`, background: color, minWidth: 4 }} />
+            <span className="text-ink tabular text-xs font-semibold">{r.display}</span>
           </div>
         </div>
       ))}

@@ -24,7 +24,7 @@ export function FilterBar(p: Props) {
   const multiStore = p.stores.length > 1; // single-branch POC: no store picker
 
   return (
-    <div className={`grid grid-cols-1 gap-3 transition-opacity sm:grid-cols-2 ${multiStore ? "lg:grid-cols-[minmax(8rem,1fr)_minmax(12rem,2fr)_auto_auto]" : "lg:grid-cols-[minmax(12rem,2fr)_auto_auto]"} ${pending ? "opacity-60" : ""}`}>
+    <div className={`border-border bg-surface shadow-card grid grid-cols-1 gap-3 rounded-2xl border p-4 transition-opacity sm:grid-cols-2 ${multiStore ? "lg:grid-cols-[minmax(8rem,1fr)_minmax(12rem,2fr)_auto_auto]" : "lg:grid-cols-[minmax(12rem,2fr)_auto_auto]"} ${pending ? "opacity-60" : ""}`}>
       {multiStore && (
         <Field label={t.filters.store}>
           <Select

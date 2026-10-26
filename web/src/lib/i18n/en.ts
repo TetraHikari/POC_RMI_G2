@@ -48,6 +48,7 @@ export const en = {
     ci95: "95% CI",
     screen: "Screen",
     clip: "Clip",
+    dataWindow: "Data window",
   },
   units: { s: "s", perHour: "/h", m: "m" },
   metrics: {
@@ -70,12 +71,19 @@ export const en = {
   },
   overview: {
     title: "Overview",
-    description: (from: string, to: string, n: number) => `${from} – ${to} · ${n} screens · store hours 08:00–22:00`,
+    description: (n: number) => `${n} screens · store hours 08:00–22:00`,
     seiByScreen: "SEI by screen",
     byHour: "Exposure events by hour of day",
     byHourDesc: "Average per hour, per screen",
     rank: "Rank",
     iabZone: "IAB zone",
+    kpiFoot: {
+      sei: "exposure events per hour",
+      footTraffic: "shoppers through screen zones",
+      exposureEvents: "looked at a screen for ≥1 s",
+      exposureRate: "exposure events ÷ foot traffic",
+      dwell: "time within 4 m of a screen",
+    },
   },
   ranking: {
     title: "SEI ranking",

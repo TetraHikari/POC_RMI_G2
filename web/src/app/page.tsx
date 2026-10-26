@@ -1,8 +1,8 @@
-import { BarList } from "@/components/charts/BarList";
+import { RankList } from "@/components/charts/RankList";
 import { LineSeriesChart } from "@/components/charts/LineSeriesChart";
 import { MetricExplainer } from "@/components/explainers/MetricExplainer";
 import { ScreenFilters } from "@/components/filters/ScreenFilters";
-import { ChartCard, DataTable, Empty, Kpi, Legend, LegendItem, PageHeader, Section, TableView } from "@/components/ui/primitives";
+import { ChartCard, DataTable, Empty, HeaderStat, Kpi, Legend, LegendItem, PageHeader, TableView } from "@/components/ui/primitives";
 import { groupBy, median, screenSummary } from "@/lib/analytics";
 import { screenColor } from "@/lib/colors";
 import type { SearchParams } from "@/lib/filters";
@@ -17,8 +17,12 @@ export default async function OverviewPage({ searchParams }: { searchParams: Pro
 
   const header = (
     <>
+      <PageHeader
+        title={t.overview.title}
+        description={t.overview.description(f.screenIds.length)}
+        aside={<HeaderStat label={t.common.dataWindow} value={`${fmtDate(f.from, locale)} – ${fmtDate(f.to, locale, true)}`} />}
+      />
       <ScreenFilters ctx={ctx} />
-      <PageHeader title={t.overview.title} description={t.overview.description(fmtDate(f.from, locale), fmtDate(f.to, locale, true), f.screenIds.length)} />
     </>
   );
   if (!hourly.length)
@@ -45,38 +49,51 @@ export default async function OverviewPage({ searchParams }: { searchParams: Pro
   return (
     <>
       {header}
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-5">
-        <Kpi label={t.metrics.footTraffic} value={fmtInt(ft)} info={<MetricExplainer kind="footTraffic" />} />
-        <Kpi label={t.metrics.exposureEvents} value={fmtInt(ev)} info={<MetricExplainer kind="exposure" />} />
-        <Kpi label={t.metrics.exposureRate} value={fmtPct(ev / ft)} hint={t.hints.exposureRate} />
-        <Kpi label={t.metrics.medianDwell} value={fmtSec(median(hourly.map((h) => h.medianDwellS)), locale)} info={<MetricExplainer kind="dwell" />} />
-        <Kpi label={t.metrics.avgSei} value={`${fmt1(ev / hourly.length)} ${t.units.perHour}`} info={<MetricExplainer kind="sei" />} />
+      <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-5">
+        <Kpi primary icon="screen" label={t.metrics.avgSei} value={`${fmt1(ev / hourly.length)} ${t.units.perHour}`} info={<MetricExplainer kind="sei" />} footer={t.overview.kpiFoot.sei} />
+        <Kpi icon="users" label={t.metrics.footTraffic} value={fmtInt(ft)} info={<MetricExplainer kind="footTraffic" />} footer={t.overview.kpiFoot.footTraffic} />
+        <Kpi icon="eye" label={t.metrics.exposureEvents} value={fmtInt(ev)} info={<MetricExplainer kind="exposure" />} footer={t.overview.kpiFoot.exposureEvents} />
+        <Kpi icon="percent" label={t.metrics.exposureRate} value={fmtPct(ev / ft)} hint={t.hints.exposureRate} footer={t.overview.kpiFoot.exposureRate} />
+        <Kpi icon="clock" label={t.metrics.medianDwell} value={fmtSec(median(hourly.map((h) => h.medianDwellS)), locale)} info={<MetricExplainer kind="dwell" />} footer={t.overview.kpiFoot.dwell} />
       </div>
 
-      <div className="mt-6 grid gap-4 lg:grid-cols-[1fr_1.4fr]">
-        <Section
+      <div className="mt-4 grid gap-4 lg:grid-cols-[1.7fr_1fr]">
+        <ChartCard
+          title={t.overview.byHour}
+          subtitle={t.overview.byHourDesc}
+          actions={
+            <Legend>
+              {lineSeries.map((l) => (
+                <LegendItem key={l.key} color={l.color} label={l.label} shape="line" />
+              ))}
+            </Legend>
+          }
+        >
+          <LineSeriesChart data={byHour} series={lineSeries} xFmt="hour" yFmt="1dp" height={280} area />
+        </ChartCard>
+        <ChartCard
           title={
             <span className="inline-flex items-center">
               {t.overview.seiByScreen}
               <MetricExplainer kind="sei" />
             </span>
           }
-          description={t.metrics.exposurePerHour}
+          subtitle={t.metrics.exposurePerHour}
         >
-          <ChartCard>
-            <BarList unitLabel={t.units.perHour} rows={summary.map((r) => ({ label: labels.get(r.screenId)!, value: r.sei, display: fmt1(r.sei) }))} />
-          </ChartCard>
-        </Section>
-        <Section title={t.overview.byHour} description={t.overview.byHourDesc}>
-          <ChartCard>
-            <Legend>
-              {lineSeries.map((l) => (
-                <LegendItem key={l.key} color={l.color} label={l.label} shape="line" />
-              ))}
-            </Legend>
-            <LineSeriesChart data={byHour} series={lineSeries} xFmt="hour" yFmt="1dp" height={260} />
-          </ChartCard>
-        </Section>
+          <RankList
+            unitLabel={t.units.perHour}
+            rows={summary.map((r) => ({
+              key: r.screenId,
+              rank: r.rank,
+              label: labels.get(r.screenId)!,
+              sublabel: screens.find((sc) => sc.screenId === r.screenId)?.iabZone,
+              detail: `${t.metrics.footTrafficPerH} ${fmtInt(r.footTrafficPerH)}`,
+              value: r.sei,
+              display: fmt1(r.sei),
+              color: screenColor(r.screenId, allIds),
+            }))}
+          />
+        </ChartCard>
       </div>
 
       <TableView label={t.common.tableView}>

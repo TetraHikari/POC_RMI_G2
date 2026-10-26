@@ -50,6 +50,8 @@ export const th: Dict = {
     ci95: "CI 95%",
     screen: "หน้าจอ",
     clip: "คลิป",
+
+    dataWindow: "ช่วงข้อมูล",
   },
   units: { s: "วิ", perHour: "/ชม.", m: "ม." },
   metrics: {
@@ -72,12 +74,20 @@ export const th: Dict = {
   },
   overview: {
     title: "ภาพรวม",
-    description: (from, to, n) => `${from} – ${to} · ${n} หน้าจอ · เวลาเปิดร้าน 08:00–22:00`,
+    description: (n) => `${n} หน้าจอ · เวลาเปิดร้าน 08:00–22:00`,
     seiByScreen: "SEI แยกตามหน้าจอ",
     byHour: "เหตุการณ์การรับชมตามช่วงเวลาของวัน",
     byHourDesc: "ค่าเฉลี่ยต่อชั่วโมง แยกตามหน้าจอ",
     rank: "อันดับ",
     iabZone: "โซน IAB",
+
+    kpiFoot: {
+      sei: "จำนวนการรับชมต่อชั่วโมง",
+      footTraffic: "ผู้ซื้อที่เดินผ่านโซนหน้าจอ",
+      exposureEvents: "หันมองจออย่างน้อย 1 วินาที",
+      exposureRate: "การรับชม ÷ ผู้สัญจร",
+      dwell: "เวลาที่อยู่ห่างจอไม่เกิน 4 ม.",
+    },
   },
   ranking: {
     title: "อันดับ SEI",

@@ -2,7 +2,7 @@ import { Heatmap } from "@/components/charts/Heatmap";
 import { LineSeriesChart } from "@/components/charts/LineSeriesChart";
 import { ParamSegmented, ParamSelect } from "@/components/filters/ParamControls";
 import { ScreenFilters } from "@/components/filters/ScreenFilters";
-import { ChartCard, DataTable, Empty, Legend, LegendItem, PageHeader, Section, TableView } from "@/components/ui/primitives";
+import { ChartCard, DataTable, Empty, Legend, LegendItem, PageHeader, TableView } from "@/components/ui/primitives";
 import { groupBy, median } from "@/lib/analytics";
 import { screenColor } from "@/lib/colors";
 import type { HourlyMetric } from "@/lib/data/types";
@@ -39,8 +39,9 @@ export default async function TrendsPage({ searchParams }: { searchParams: Promi
 
   const header = (
     <>
-      <ScreenFilters ctx={ctx} />
       <PageHeader title={t.trends.title} />
+      <ScreenFilters ctx={ctx} />
+      <div className="mt-4" />
       <ParamSegmented
         param="metric"
         value={metric}
@@ -81,35 +82,38 @@ export default async function TrendsPage({ searchParams }: { searchParams: Promi
   return (
     <>
       {header}
-      <Section title={t.trends.byDay(metricLabel)}>
-        <ChartCard>
+      <ChartCard
+        className="mt-4"
+        title={t.trends.byDay(metricLabel)}
+        actions={
           <Legend>
             {lineSeries.map((l) => (
               <LegendItem key={l.key} color={l.color} label={l.label} shape="line" />
             ))}
           </Legend>
-          <LineSeriesChart data={daily} series={lineSeries} xFmt="day" yFmt={fmtKey} height={340} markers />
-        </ChartCard>
-      </Section>
+        }
+      >
+        <LineSeriesChart data={daily} series={lineSeries} xFmt="day" yFmt={fmtKey} height={340} markers area />
+      </ChartCard>
 
-      <Section
+      <ChartCard
+        className="mt-4"
         title={t.trends.heatmap}
+        subtitle={labels.get(heatScreen)}
         actions={
           <div className="w-56">
             <ParamSelect param="heat" value={heatScreen} options={f.screenIds.map((id) => ({ value: id, label: labels.get(id)! }))} ariaLabel={t.trends.heatScreen} />
           </div>
         }
       >
-        <ChartCard>
-          <Heatmap
-            rows={days.map((d) => dayNames[d])}
-            cols={hours.map((h) => `${String(h).padStart(2, "0")}:00`)}
-            values={values}
-            fmtKey={fmtKey}
-            valueLabel={`${metricLabel} · ${labels.get(heatScreen)}`}
-          />
-        </ChartCard>
-      </Section>
+        <Heatmap
+          rows={days.map((d) => dayNames[d])}
+          cols={hours.map((h) => `${String(h).padStart(2, "0")}:00`)}
+          values={values}
+          fmtKey={fmtKey}
+          valueLabel={`${metricLabel} · ${labels.get(heatScreen)}`}
+        />
+      </ChartCard>
 
       <TableView label={t.common.tableView}>
         <DataTable

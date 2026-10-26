@@ -19,7 +19,7 @@ export function useWidth<T extends HTMLElement>(): [React.RefObject<T | null>, n
 
 /** Tooltip box shared by Recharts and hand-rolled SVG charts. */
 export function TipBox({ children }: { children: ReactNode }) {
-  return <div className="border-axis bg-raised text-ink pointer-events-none rounded-md border px-2.5 py-1.5 text-xs shadow-md">{children}</div>;
+  return <div className="border-border bg-raised text-ink pointer-events-none rounded-xl border px-3 py-2 text-xs shadow-lg">{children}</div>;
 }
 
 export function TipRow({ color, label, value }: { color?: string; label: ReactNode; value: ReactNode }) {

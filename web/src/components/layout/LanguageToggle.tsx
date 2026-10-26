@@ -18,7 +18,7 @@ export function LanguageToggle() {
   }
 
   return (
-    <div role="radiogroup" aria-label={t.sidebar.language} className={`border-border inline-flex w-fit rounded-md border p-0.5 text-xs ${pending ? "opacity-60" : ""}`}>
+    <div role="radiogroup" aria-label={t.sidebar.language} className={`border-border bg-surface inline-flex w-fit rounded-full border p-0.5 text-xs ${pending ? "opacity-60" : ""}`}>
       {LOCALES.map((l) => (
         <button
           key={l.value}
@@ -26,7 +26,7 @@ export function LanguageToggle() {
           aria-checked={locale === l.value}
           lang={l.value}
           onClick={() => pick(l.value)}
-          className={`rounded px-2.5 py-1 ${locale === l.value ? "bg-accent-soft text-ink font-medium" : "text-muted hover:text-ink-2"}`}
+          className={`rounded-full px-2.5 py-1 ${locale === l.value ? "bg-accent text-on-accent font-medium" : "text-muted hover:text-ink-2"}`}
         >
           {l.label}
         </button>

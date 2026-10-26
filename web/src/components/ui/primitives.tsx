@@ -1,20 +1,35 @@
 import type { ReactNode } from "react";
 
-export function PageHeader({ title, description }: { title: string; description?: ReactNode }) {
+import { Icon, type IconName } from "./icons";
+
+export function PageHeader({ title, description, aside }: { title: string; description?: ReactNode; aside?: ReactNode }) {
   return (
-    <header className="mt-6 mb-5">
-      <h1 className="text-ink text-2xl font-semibold tracking-tight md:text-3xl">{title}</h1>
-      {description && <p className="text-ink-2 mt-1.5 max-w-3xl text-sm leading-relaxed">{description}</p>}
+    <header className="mt-6 mb-4 flex flex-wrap items-end justify-between gap-3">
+      <div className="min-w-0">
+        <h1 className="text-ink text-2xl font-bold tracking-tight md:text-[28px]">{title}</h1>
+        {description && <p className="text-muted mt-1 max-w-3xl text-sm leading-relaxed">{description}</p>}
+      </div>
+      {aside && <div className="sm:text-right">{aside}</div>}
     </header>
+  );
+}
+
+/** Right-aligned "label / value" pair for the page header (e.g. the data window). */
+export function HeaderStat({ label, value }: { label: string; value: ReactNode }) {
+  return (
+    <>
+      <div className="text-muted text-[11px]">{label}</div>
+      <div className="text-ink text-sm font-semibold">{value}</div>
+    </>
   );
 }
 
 export function Section({ title, description, children, actions }: { title: ReactNode; description?: ReactNode; children: ReactNode; actions?: ReactNode }) {
   return (
-    <section className="mt-8">
+    <section className="mt-6">
       <div className="mb-3 flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h2 className="text-ink text-lg font-semibold">{title}</h2>
+          <h2 className="text-ink text-base font-semibold">{title}</h2>
           {description && <p className="text-ink-2 mt-0.5 text-sm">{description}</p>}
         </div>
         {actions}
@@ -25,30 +40,65 @@ export function Section({ title, description, children, actions }: { title: Reac
 }
 
 export function Card({ children, className = "" }: { children: ReactNode; className?: string }) {
-  return <div className={`border-border bg-surface rounded-lg border ${className}`}>{children}</div>;
+  return <div className={`border-border bg-surface shadow-card rounded-2xl border ${className}`}>{children}</div>;
 }
 
-export function ChartCard({ title, subtitle, children }: { title?: ReactNode; subtitle?: ReactNode; children: ReactNode }) {
+export function ChartCard({ title, subtitle, actions, children, className = "" }: { title?: ReactNode; subtitle?: ReactNode; actions?: ReactNode; children: ReactNode; className?: string }) {
   return (
-    <Card className="p-4">
-      {title && <div className="text-ink text-sm font-medium">{title}</div>}
-      {subtitle && <div className="text-muted mt-0.5 text-xs">{subtitle}</div>}
-      <div className={title || subtitle ? "mt-3" : ""}>{children}</div>
+    <Card className={`p-5 ${className}`}>
+      {(title || actions) && (
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div className="min-w-0">
+            {title && <div className="text-ink text-[15px] font-semibold">{title}</div>}
+            {subtitle && <div className="text-muted mt-0.5 text-xs">{subtitle}</div>}
+          </div>
+          {actions}
+        </div>
+      )}
+      <div className={title || subtitle || actions ? "mt-4" : ""}>{children}</div>
     </Card>
   );
 }
 
-/** `info` (e.g. an animated explainer trigger) takes the place of the plain `hint` marker. */
-export function Kpi({ label, value, hint, info, footer }: { label: string; value: ReactNode; hint?: string; info?: ReactNode; footer?: ReactNode }) {
+/**
+ * KPI tile with an icon chip. `primary` fills the tile with the accent (use once per row).
+ * `info` (e.g. an animated explainer trigger) takes the place of the plain `hint` marker.
+ */
+export function Kpi({
+  label,
+  value,
+  icon,
+  hint,
+  info,
+  footer,
+  primary = false,
+}: {
+  label: string;
+  value: ReactNode;
+  icon?: IconName;
+  hint?: string;
+  info?: ReactNode;
+  footer?: ReactNode;
+  primary?: boolean;
+}) {
   return (
-    <Card className="p-4">
-      <div className="text-ink-2 flex items-center text-xs" title={info ? undefined : hint}>
+    <div
+      className={`shadow-card flex flex-col rounded-2xl border p-4 ${
+        primary ? "bg-accent text-on-accent border-transparent" : "border-border bg-surface text-ink"
+      }`}
+    >
+      {icon && (
+        <span className={`flex size-8 items-center justify-center rounded-lg ${primary ? "bg-white/20" : "bg-accent-soft text-accent"}`}>
+          <Icon name={icon} size={16} />
+        </span>
+      )}
+      <div className={`mt-3 flex items-center text-[13px] font-medium ${primary ? "text-on-accent/90" : "text-ink-2"}`} title={info ? undefined : hint}>
         {label}
-        {info ?? (hint && <span className="text-muted ml-1 cursor-help">ⓘ</span>)}
+        {info ?? (hint && <span className={`ml-1 cursor-help ${primary ? "text-on-accent/70" : "text-muted"}`}>ⓘ</span>)}
       </div>
-      <div className="text-ink mt-1 text-2xl font-semibold md:text-[28px]">{value}</div>
-      {footer && <div className="mt-2 text-xs">{footer}</div>}
-    </Card>
+      <div className="tabular mt-0.5 text-2xl font-bold tracking-tight md:text-[28px]">{value}</div>
+      {footer && <div className={`mt-1 text-xs ${primary ? "text-on-accent/80" : "text-muted"}`}>{footer}</div>}
+    </div>
   );
 }
 
@@ -83,9 +133,9 @@ export interface Column<T> {
 
 export function DataTable<T>({ rows, columns, maxHeight }: { rows: T[]; columns: Column<T>[]; maxHeight?: number }) {
   return (
-    <div className="border-border overflow-auto rounded-md border" style={maxHeight ? { maxHeight } : undefined}>
+    <div className="border-border overflow-auto rounded-xl border" style={maxHeight ? { maxHeight } : undefined}>
       <table className="w-full text-sm">
-        <thead className="bg-raised text-muted sticky top-0 text-xs">
+        <thead className="bg-surface text-muted sticky top-0 text-xs">
           <tr>
             {columns.map((c) => (
               <th key={c.key} className={`border-border border-b px-3 py-2 font-medium whitespace-nowrap ${c.align === "right" ? "text-right" : "text-left"}`}>
@@ -98,7 +148,7 @@ export function DataTable<T>({ rows, columns, maxHeight }: { rows: T[]; columns:
           {rows.map((r, i) => (
             <tr key={i} className="border-border hover:bg-hover border-b last:border-0">
               {columns.map((c) => (
-                <td key={c.key} className={`text-ink-2 px-3 py-1.5 whitespace-nowrap ${c.align === "right" ? "text-right" : ""}`}>
+                <td key={c.key} className={`text-ink-2 px-3 py-2 whitespace-nowrap ${c.align === "right" ? "text-right" : ""}`}>
                   {c.render(r)}
                 </td>
               ))}
@@ -113,9 +163,9 @@ export function DataTable<T>({ rows, columns, maxHeight }: { rows: T[]; columns:
 /** Every chart gets a table twin, collapsed by default. */
 export function TableView({ label, children }: { label: string; children: ReactNode }) {
   return (
-    <details className="group border-border bg-surface mt-3 rounded-lg border">
-      <summary className="text-ink-2 hover:bg-hover cursor-pointer rounded-lg px-4 py-2.5 text-sm select-none">{label}</summary>
-      <div className="px-4 pb-4">{children}</div>
+    <details className="group border-border bg-surface shadow-card mt-4 rounded-2xl border">
+      <summary className="text-ink-2 hover:bg-hover cursor-pointer rounded-2xl px-5 py-3 text-sm font-medium select-none">{label}</summary>
+      <div className="px-5 pb-5">{children}</div>
     </details>
   );
 }

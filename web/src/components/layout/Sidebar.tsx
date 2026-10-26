@@ -4,11 +4,11 @@ import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 
 import { useI18n } from "@/components/i18n/I18nProvider";
-import { LanguageToggle } from "@/components/layout/LanguageToggle";
-import { ThemeToggle } from "@/components/layout/ThemeToggle";
+import { Icon, type IconName } from "@/components/ui/icons";
 import { SHARED_KEYS } from "@/lib/filters";
 
-export function Sidebar({ source }: { source: string }) {
+/** Icon rail: logo, one icon + short label per page. Horizontal strip on small screens. */
+export function Sidebar() {
   const { t } = useI18n();
   const pathname = usePathname();
   const params = useSearchParams();
@@ -20,67 +20,40 @@ export function Sidebar({ source }: { source: string }) {
   }
   const qs = carried.toString();
 
-  const nav = [
-    {
-      group: t.nav.screens,
-      items: [
-        { href: "/", label: t.nav.overview },
-        { href: "/ranking", label: t.nav.ranking },
-        { href: "/trends", label: t.nav.trends },
-      ],
-    },
+  const items: { href: string; label: string; icon: IconName }[] = [
+    { href: "/", label: t.nav.overview, icon: "grid" },
+    { href: "/ranking", label: t.nav.ranking, icon: "trophy" },
+    { href: "/trends", label: t.nav.trends, icon: "trend" },
   ];
 
   return (
-    <aside className="border-border bg-surface flex shrink-0 flex-col gap-6 border-b px-4 py-5 md:sticky md:top-0 md:h-screen md:w-60 md:border-r md:border-b-0">
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <div className="text-ink text-sm font-semibold">{t.app.name}</div>
-          <div className="text-muted text-xs">{t.app.subtitle}</div>
-        </div>
-        <div className="md:hidden">
-          <LanguageToggle />
-        </div>
-      </div>
-      <nav className="flex flex-wrap gap-x-6 gap-y-4 md:flex-col">
-        {nav.map((g) => (
-          <div key={g.group}>
-            <div className="text-muted mb-1 text-xs font-medium tracking-wide uppercase">{g.group}</div>
-            <ul className="flex flex-wrap gap-1 md:flex-col">
-              {g.items.map((it) => {
-                const active = pathname === it.href;
-                return (
-                  <li key={it.href}>
-                    <Link
-                      href={qs ? `${it.href}?${qs}` : it.href}
-                      aria-current={active ? "page" : undefined}
-                      className={`block rounded-md px-2.5 py-1.5 text-sm ${active ? "bg-accent-soft text-ink font-medium" : "text-ink-2 hover:bg-hover"}`}
-                    >
-                      {it.label}
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        ))}
+    <aside className="bg-surface border-border flex shrink-0 items-center gap-4 border-b px-4 py-3 md:sticky md:top-0 md:h-screen md:w-24 md:flex-col md:gap-8 md:border-r md:border-b-0 md:px-2 md:py-6">
+      <Link href={qs ? `/?${qs}` : "/"} aria-label={t.app.name} className="bg-accent text-on-accent flex size-10 shrink-0 items-center justify-center rounded-xl text-xs font-bold tracking-tight">
+        RMI
+      </Link>
+      <nav className="flex gap-1 md:flex-col md:gap-3">
+        {items.map((it) => {
+          const active = pathname === it.href;
+          return (
+            <Link
+              key={it.href}
+              href={qs ? `${it.href}?${qs}` : it.href}
+              aria-current={active ? "page" : undefined}
+              className="group flex items-center rounded-xl md:flex-col md:gap-1.5 md:px-1 md:py-1"
+              title={it.label}
+            >
+              <span
+                className={`flex size-10 items-center justify-center rounded-xl transition-colors ${
+                  active ? "bg-accent text-on-accent shadow-card" : "text-ink-2 border-border group-hover:bg-hover border"
+                }`}
+              >
+                <Icon name={it.icon} />
+              </span>
+              <span className={`sr-only text-[11px] leading-tight md:not-sr-only md:text-center ${active ? "text-ink font-semibold" : "text-muted group-hover:text-ink-2"}`}>{it.label}</span>
+            </Link>
+          );
+        })}
       </nav>
-      <div className="mt-auto flex flex-col gap-3">
-        {source === "mock" && (
-          <p className="text-muted text-xs leading-relaxed">
-            {t.sidebar.mockPrefix} <span className="text-ink-2 font-medium">{t.sidebar.mockData}</span>
-            {t.sidebar.mockSep} {t.sidebar.mockSuffix}
-          </p>
-        )}
-        <div className="hidden flex-col gap-1.5 md:flex">
-          <span className="text-muted text-xs">{t.sidebar.language}</span>
-          <LanguageToggle />
-        </div>
-        <div className="flex flex-col gap-1.5">
-          <span className="text-muted text-xs">{t.sidebar.theme}</span>
-          <ThemeToggle />
-        </div>
-      </div>
     </aside>
   );
 }

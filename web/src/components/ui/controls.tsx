@@ -28,14 +28,14 @@ export function useQueryState() {
 export function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="flex min-w-0 flex-col gap-1">
-      <span className="text-ink-2 text-xs font-medium">{label}</span>
+      <span className="text-muted text-xs font-medium">{label}</span>
       {children}
     </label>
   );
 }
 
 const inputCls =
-  "border-border bg-raised text-ink h-9 rounded-md border px-2.5 text-sm outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]";
+  "border-border bg-surface text-ink h-9 rounded-xl border px-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]";
 
 export function Select<T extends string | number>({
   value,
@@ -73,7 +73,7 @@ export function DateInput({ value, min, max, onChange, ariaLabel }: { value: str
 
 export function Segmented<T extends string>({ value, options, onChange, ariaLabel }: { value: T; options: { value: T; label: string }[]; onChange: (v: T) => void; ariaLabel: string }) {
   return (
-    <div role="radiogroup" aria-label={ariaLabel} className="border-border bg-raised inline-flex h-9 w-fit rounded-md border p-0.5">
+    <div role="radiogroup" aria-label={ariaLabel} className="border-border bg-surface inline-flex h-9 w-fit rounded-xl border p-0.5">
       {options.map((o) => (
         <button
           key={o.value}
@@ -81,7 +81,7 @@ export function Segmented<T extends string>({ value, options, onChange, ariaLabe
           role="radio"
           aria-checked={value === o.value}
           onClick={() => onChange(o.value)}
-          className={`rounded px-3 text-sm whitespace-nowrap ${value === o.value ? "bg-accent-soft text-ink font-medium" : "text-ink-2 hover:bg-hover"}`}
+          className={`rounded-lg px-3 text-sm whitespace-nowrap ${value === o.value ? "bg-accent text-on-accent font-medium" : "text-ink-2 hover:bg-hover"}`}
         >
           {o.label}
         </button>
@@ -134,7 +134,7 @@ export function MultiSelect({
         </span>
       </button>
       {open && (
-        <div className="border-border bg-raised absolute z-20 mt-1 w-full min-w-56 rounded-md border p-1 shadow-lg">
+        <div className="border-border bg-raised absolute z-20 mt-1 w-full min-w-56 rounded-xl border p-1 shadow-lg">
           {options.map((o) => (
             <label key={o.value} className="text-ink hover:bg-hover flex cursor-pointer items-center gap-2 rounded px-2 py-1.5 text-sm">
               <input type="checkbox" className="accent-[var(--accent)]" checked={selected.includes(o.value)} onChange={() => toggle(o.value)} />

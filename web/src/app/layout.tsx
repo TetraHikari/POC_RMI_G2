@@ -3,6 +3,7 @@ import { Suspense } from "react";
 
 import { I18nProvider } from "@/components/i18n/I18nProvider";
 import { Sidebar } from "@/components/layout/Sidebar";
+import { TopBar } from "@/components/layout/TopBar";
 import { getDataSource } from "@/lib/data";
 import { getI18n } from "@/lib/i18n/server";
 
@@ -29,10 +30,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <I18nProvider locale={locale}>
           <div className="flex min-h-screen flex-col md:flex-row">
             <Suspense>
-              <Sidebar source={source} />
+              <Sidebar />
             </Suspense>
-            <main className="min-w-0 flex-1 px-4 py-6 md:px-10 md:py-8">
-              <div className="mx-auto max-w-6xl">{children}</div>
+            <main className="min-w-0 flex-1 px-4 py-5 md:px-8 md:py-6">
+              <div className="mx-auto max-w-7xl">
+                <TopBar source={source} />
+                {children}
+              </div>
             </main>
           </div>
         </I18nProvider>

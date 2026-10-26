@@ -15,8 +15,8 @@ export default async function RankingPage({ searchParams }: { searchParams: Prom
 
   const header = (
     <>
-      <ScreenFilters ctx={ctx} />
       <PageHeader title={T.title} description={T.description} />
+      <ScreenFilters ctx={ctx} />
     </>
   );
   if (!hourly.length)
@@ -39,6 +39,7 @@ export default async function RankingPage({ searchParams }: { searchParams: Prom
     <>
       {header}
       <ChartCard
+        className="mt-4"
         title={
           <span className="inline-flex items-center">
             {t.overview.seiByScreen}
