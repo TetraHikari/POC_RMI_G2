@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useLayoutEffect, useId, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 import { useI18n } from "@/components/i18n/I18nProvider";
 
@@ -15,6 +16,8 @@ const PANEL_W = 320;
 /**
  * ⓘ trigger that opens an animated explainer. Hover opens it on mouse devices;
  * tap/click toggles it on touch; Esc or an outside tap closes it.
+ * The panel is portalled to <body>: animated/hovered cards use transforms, which would
+ * otherwise trap a `position: fixed` panel inside the card (wrong place, drawn under later cards).
  */
 export function MetricExplainer({ kind }: { kind: ExplainerKind }) {
   const { t } = useI18n();
@@ -26,6 +29,7 @@ export function MetricExplainer({ kind }: { kind: ExplainerKind }) {
   const btn = useRef<HTMLButtonElement>(null);
   const panel = useRef<HTMLDivElement>(null);
   const closeTimer = useRef<number | undefined>(undefined);
+  const byHover = useRef(false); // opened by mouse hover: a click then keeps it open instead of toggling it shut
 
   const place = useCallback(() => {
     const r = btn.current?.getBoundingClientRect();
@@ -41,6 +45,7 @@ export function MetricExplainer({ kind }: { kind: ExplainerKind }) {
 
   useLayoutEffect(() => {
     if (open) place();
+    else byHover.current = false;
   }, [open, place]);
 
   useEffect(() => {
@@ -72,11 +77,16 @@ export function MetricExplainer({ kind }: { kind: ExplainerKind }) {
   const hoverOpen = (e: React.PointerEvent) => {
     if (e.pointerType !== "mouse") return;
     window.clearTimeout(closeTimer.current);
+    if (!open) byHover.current = true;
     setOpen(true);
   };
   const hoverClose = (e: React.PointerEvent) => {
     if (e.pointerType !== "mouse") return;
     closeTimer.current = window.setTimeout(() => setOpen(false), 180);
+  };
+  const onClick = () => {
+    if (byHover.current) byHover.current = false;
+    else setOpen((o) => !o);
   };
 
   return (
@@ -88,7 +98,7 @@ export function MetricExplainer({ kind }: { kind: ExplainerKind }) {
         aria-haspopup="dialog"
         aria-controls={open ? panelId : undefined}
         aria-label={`${t.explain.open}: ${info.title}`}
-        onClick={() => setOpen((o) => !o)}
+        onClick={onClick}
         onPointerEnter={hoverOpen}
         onPointerLeave={hoverClose}
         className={`ml-1 inline-flex size-4 items-center justify-center rounded-full border text-[10px] leading-none transition-colors ${
@@ -97,27 +107,29 @@ export function MetricExplainer({ kind }: { kind: ExplainerKind }) {
       >
         i
       </button>
-      {open && (
-        <div
-          ref={panel}
-          id={panelId}
-          role="dialog"
-          aria-label={info.title}
-          onPointerEnter={hoverOpen}
-          onPointerLeave={hoverClose}
-          className="border-border bg-raised text-ink fixed z-50 overflow-y-auto rounded-lg border p-3 shadow-xl motion-reduce:animate-none!"
-          style={{ maxHeight: "calc(100dvh - 16px)", left: pos.left, top: pos.top, width: `min(${PANEL_W}px, calc(100vw - 16px))`, animation: "explainer-in 160ms ease-out" }}
-        >
-          <div className="mb-1.5 flex items-start justify-between gap-2">
-            <div className="text-sm font-semibold">{info.title}</div>
-            <button type="button" onClick={() => setOpen(false)} aria-label={t.explain.close} className="text-muted hover:text-ink -mt-0.5 px-1 text-sm">
-              ✕
-            </button>
-          </div>
-          <p className="text-ink-2 mb-2 text-xs leading-relaxed">{info.body}</p>
-          <Scene active={open} />
-        </div>
-      )}
+      {open &&
+        createPortal(
+          <div
+            ref={panel}
+            id={panelId}
+            role="dialog"
+            aria-label={info.title}
+            onPointerEnter={hoverOpen}
+            onPointerLeave={hoverClose}
+            className="border-border bg-raised text-ink fixed z-50 overflow-y-auto rounded-2xl border p-4 shadow-xl motion-reduce:animate-none!"
+            style={{ maxHeight: "calc(100dvh - 16px)", left: pos.left, top: pos.top, width: `min(${PANEL_W}px, calc(100vw - 16px))`, animation: "explainer-in 160ms ease-out" }}
+          >
+            <div className="mb-1.5 flex items-start justify-between gap-2">
+              <div className="text-sm font-semibold">{info.title}</div>
+              <button type="button" onClick={() => setOpen(false)} aria-label={t.explain.close} className="text-muted hover:text-ink -mt-0.5 px-1 text-sm">
+                ✕
+              </button>
+            </div>
+            <p className="text-ink-2 mb-2 text-xs leading-relaxed">{info.body}</p>
+            <Scene active={open} />
+          </div>,
+          document.body,
+        )}
     </>
   );
 }
