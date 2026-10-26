@@ -14,10 +14,7 @@ export function TopBar({ source }: { source: string }) {
         <span className="md:hidden">
           <LogoMark small />
         </span>
-        <div className="min-w-0">
-          <div className="text-ink truncate text-sm font-semibold">{t.app.name}</div>
-          <div className="text-muted truncate text-xs">{t.app.subtitle}</div>
-        </div>
+        <div className="text-ink min-w-0 truncate text-sm font-semibold">{t.app.name}</div>
       </div>
       <div className="flex flex-wrap items-center gap-2">
         {source === "mock" && (

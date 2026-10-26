@@ -1,6 +1,6 @@
 /** English strings. `th.ts` must provide the same shape (type-checked via Dict). */
 export const en = {
-  app: { name: "Retail Media Intelligence", subtitle: "CP Axtra POC · Group 2", description: "POC dashboard: CCTV-based foot traffic, dwell time and ad-screen exposure (SEI)." },
+  app: { name: "Retail Media Intelligence", description: "POC dashboard: CCTV-based foot traffic, dwell time and ad-screen exposure (SEI)." },
   nav: {
     screens: "Screens",
     overview: "Overview",

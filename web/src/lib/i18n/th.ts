@@ -2,7 +2,7 @@ import type { Dict } from "./en";
 
 /** Thai strings. Technical terms (SEI, CI, IAB) stay in English. */
 export const th: Dict = {
-  app: { name: "Retail Media Intelligence", subtitle: "POC ร่วมกับ CP Axtra · กลุ่ม 2", description: "แดชบอร์ด POC: วัดจำนวนผู้สัญจร ระยะเวลาอยู่ในโซน และการรับชมจอโฆษณา (SEI) จากกล้องวงจรปิด" },
+  app: { name: "Retail Media Intelligence", description: "แดชบอร์ด POC: วัดจำนวนผู้สัญจร ระยะเวลาอยู่ในโซน และการรับชมจอโฆษณา (SEI) จากกล้องวงจรปิด" },
   nav: {
     screens: "หน้าจอ",
     overview: "ภาพรวม",
