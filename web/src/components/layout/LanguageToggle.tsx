@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 
 import { useI18n } from "@/components/i18n/I18nProvider";
+import { PillGroup } from "@/components/ui/controls";
 import { LOCALE_COOKIE, LOCALES, type Locale } from "@/lib/i18n";
 
 export function LanguageToggle() {
@@ -12,25 +13,18 @@ export function LanguageToggle() {
   const [pending, startTransition] = useTransition();
 
   function pick(l: Locale) {
-    if (l === locale) return;
     document.cookie = `${LOCALE_COOKIE}=${l}; path=/; max-age=31536000; samesite=lax`;
     startTransition(() => router.refresh());
   }
 
   return (
-    <div role="radiogroup" aria-label={t.sidebar.language} className={`border-border bg-surface inline-flex w-fit rounded-full border p-0.5 text-xs ${pending ? "opacity-60" : ""}`}>
-      {LOCALES.map((l) => (
-        <button
-          key={l.value}
-          role="radio"
-          aria-checked={locale === l.value}
-          lang={l.value}
-          onClick={() => pick(l.value)}
-          className={`rounded-full transition-colors duration-200 px-2.5 py-1 ${locale === l.value ? "bg-accent text-on-accent font-medium" : "text-muted hover:text-ink-2"}`}
-        >
-          {l.label}
-        </button>
-      ))}
-    </div>
+    <PillGroup<Locale>
+      variant="pill"
+      ariaLabel={t.sidebar.language}
+      value={locale}
+      options={LOCALES.map((l) => ({ value: l.value, label: l.label, lang: l.value }))}
+      onChange={pick}
+      className={`transition-opacity ${pending ? "opacity-70" : ""}`}
+    />
   );
 }

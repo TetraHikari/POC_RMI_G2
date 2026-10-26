@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 
 import { useI18n } from "@/components/i18n/I18nProvider";
+import { PillGroup } from "@/components/ui/controls";
 
 type Mode = "system" | "light" | "dark";
 const MODES: Mode[] = ["system", "light", "dark"];
@@ -29,19 +30,5 @@ export function ThemeToggle() {
     } catch {}
   }
 
-  return (
-    <div role="radiogroup" aria-label={t.sidebar.theme} className="border-border bg-surface inline-flex w-fit rounded-full border p-0.5 text-xs">
-      {MODES.map((m) => (
-        <button
-          key={m}
-          role="radio"
-          aria-checked={mode === m}
-          onClick={() => pick(m)}
-          className={`rounded-full transition-colors duration-200 px-2 py-1 ${mode === m ? "bg-accent text-on-accent font-medium" : "text-muted hover:text-ink-2"}`}
-        >
-          {t.sidebar.themes[m]}
-        </button>
-      ))}
-    </div>
-  );
+  return <PillGroup<Mode> variant="pill" ariaLabel={t.sidebar.theme} value={mode} options={MODES.map((m) => ({ value: m, label: t.sidebar.themes[m] }))} onChange={pick} />;
 }

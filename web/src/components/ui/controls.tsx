@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useRef, useState, useTransition } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, useTransition } from "react";
 
 import { useI18n } from "@/components/i18n/I18nProvider";
 
@@ -71,23 +71,106 @@ export function DateInput({ value, min, max, onChange, ariaLabel }: { value: str
   return <input type="date" aria-label={ariaLabel} className={`${inputCls} tabular`} value={value} min={min} max={max} onChange={(e) => onChange(e.target.value)} />;
 }
 
-export function Segmented<T extends string>({ value, options, onChange, ariaLabel }: { value: T; options: { value: T; label: string }[]; onChange: (v: T) => void; ariaLabel: string }) {
+type PillVariant = "segment" | "pill";
+
+const PILL_STYLES: Record<PillVariant, { group: string; item: string; thumb: string }> = {
+  segment: {
+    group: "border-border bg-surface h-9 rounded-xl border p-0.5 text-sm",
+    item: "rounded-lg px-3",
+    thumb: "rounded-lg",
+  },
+  pill: {
+    group: "border-border bg-surface rounded-full border p-0.5 text-xs",
+    item: "rounded-full px-2.5 py-1",
+    thumb: "rounded-full",
+  },
+};
+
+/**
+ * Radio group whose green highlight slides to the picked option.
+ * The highlight moves on click (before slow work like a URL update or refresh finishes) and
+ * re-measures when labels change width (e.g. switching language).
+ */
+export function PillGroup<T extends string>({
+  value,
+  options,
+  onChange,
+  ariaLabel,
+  variant = "segment",
+  className = "",
+}: {
+  value: T;
+  options: { value: T; label: string; lang?: string }[];
+  onChange: (v: T) => void;
+  ariaLabel: string;
+  variant?: PillVariant;
+  className?: string;
+}) {
+  const st = PILL_STYLES[variant];
+  const [shown, setShown] = useState(value);
+  const [thumb, setThumb] = useState<{ x: number; w: number } | null>(null);
+  const [ready, setReady] = useState(false); // no slide on first paint
+  const group = useRef<HTMLDivElement>(null);
+  const items = useRef(new Map<string, HTMLButtonElement>());
+
+  useEffect(() => setShown(value), [value]);
+
+  useLayoutEffect(() => {
+    const measure = () => {
+      const el = items.current.get(shown);
+      if (el) setThumb({ x: el.offsetLeft, w: el.offsetWidth });
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    if (group.current) ro.observe(group.current);
+    items.current.forEach((el) => ro.observe(el));
+    return () => ro.disconnect();
+  }, [shown, options]);
+
+  useEffect(() => {
+    const id = requestAnimationFrame(() => setReady(true));
+    return () => cancelAnimationFrame(id);
+  }, []);
+
   return (
-    <div role="radiogroup" aria-label={ariaLabel} className="border-border bg-surface inline-flex h-9 w-fit max-w-full overflow-x-auto rounded-xl border p-0.5 [scrollbar-width:none]">
-      {options.map((o) => (
-        <button
-          key={o.value}
-          type="button"
-          role="radio"
-          aria-checked={value === o.value}
-          onClick={() => onChange(o.value)}
-          className={`shrink-0 rounded-lg px-3 text-sm whitespace-nowrap transition-colors duration-200 ${value === o.value ? "bg-accent text-on-accent font-medium" : "text-ink-2 hover:bg-hover"}`}
-        >
-          {o.label}
-        </button>
-      ))}
+    <div ref={group} role="radiogroup" aria-label={ariaLabel} className={`relative isolate inline-flex w-fit max-w-full overflow-x-auto [scrollbar-width:none] ${st.group} ${className}`}>
+      {thumb && (
+        <span
+          aria-hidden
+          className={`bg-accent shadow-card absolute inset-y-0.5 -z-10 ${st.thumb} ${ready ? "transition-[left,width] duration-300 ease-[var(--ease-out)]" : ""}`}
+          style={{ left: thumb.x, width: thumb.w }}
+        />
+      )}
+      {options.map((o) => {
+        const on = shown === o.value;
+        return (
+          <button
+            key={o.value}
+            ref={(el) => {
+              if (el) items.current.set(o.value, el);
+              else items.current.delete(o.value);
+            }}
+            type="button"
+            role="radio"
+            aria-checked={on}
+            lang={o.lang}
+            onClick={() => {
+              if (on) return;
+              setShown(o.value);
+              onChange(o.value);
+            }}
+            className={`shrink-0 whitespace-nowrap transition-colors duration-300 ${st.item} ${on ? "text-on-accent font-medium" : "text-muted hover:text-ink-2"}`}
+          >
+            {o.label}
+          </button>
+        );
+      })}
     </div>
   );
+}
+
+export function Segmented<T extends string>({ value, options, onChange, ariaLabel }: { value: T; options: { value: T; label: string }[]; onChange: (v: T) => void; ariaLabel: string }) {
+  return <PillGroup value={value} options={options} onChange={onChange} ariaLabel={ariaLabel} />;
 }
 
 /** Checkbox popover. An empty selection means "all". */
