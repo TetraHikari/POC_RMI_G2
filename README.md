@@ -1,4 +1,4 @@
-# AI Retail Media Intelligence — POC (CMKL Group 2 × CP Axtra)
+# AI Retail Media Intelligence — POC
 
 Measure in-store ad-screen reach from existing CCTV: foot traffic, dwell time and
 exposure events, rolled up into a Screen Exposure Index (SEI) per screen, and
