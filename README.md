@@ -4,10 +4,28 @@ Measure in-store ad-screen reach from existing CCTV: foot traffic, dwell time an
 exposure events, rolled up into a Screen Exposure Index (SEI) per screen, and
 validated against blind human labels (H1 accuracy, H2 screen ranking).
 
+## Screenshots
+
+Dashboard on mock data (Next.js, English / Thai, light / dark).
+
+![Overview](docs/screenshots/overview.png)
+
+| SEI ranking | Trends |
+|---|---|
+| ![SEI ranking](docs/screenshots/ranking.png) | ![Trends](docs/screenshots/trends.png) |
+
+| Dark mode | Thai |
+|---|---|
+| ![Overview, dark mode](docs/screenshots/overview-dark.png) | ![Overview in Thai](docs/screenshots/overview-thai.png) |
+
+| Animated explainer (tap any ⓘ) | Phone |
+|---|---|
+| ![SEI explainer popup](docs/screenshots/explainer-sei.png) | <img src="docs/screenshots/mobile.png" alt="Overview on a phone" width="260"> |
+
 ## Repository layout
 
 ```
-docs/           Guides (sei-guide.md — how to read SEI, EN/TH)
+docs/           Guides (sei-guide.md — how to read SEI, EN/TH) and UI screenshots
 architecture/   Tech stack + deployment diagram (tech-stack.drawio — open in draw.io)
 notebooks/      Prototyping notebooks (YOLO detection + pose → footfall / dwell / facing)
 schema/         PostgreSQL schema.sql, seed.sql and ER diagram (er-diagram.drawio)
