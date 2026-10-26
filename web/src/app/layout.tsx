@@ -28,11 +28,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       {/* Browser extensions often add attributes to <body> before React loads; ignore those diffs (one level deep only). */}
       <body className="min-h-screen antialiased" suppressHydrationWarning>
         <I18nProvider locale={locale}>
-          <div className="flex min-h-screen flex-col md:flex-row">
+          <div className="flex min-h-screen">
             <Suspense>
               <Sidebar />
             </Suspense>
-            <main className="min-w-0 flex-1 px-4 py-5 md:px-8 md:py-6">
+            <main className="min-w-0 flex-1 px-4 pt-5 pb-24 md:px-8 md:py-6">
               <div className="mx-auto max-w-7xl">
                 <TopBar source={source} />
                 {children}

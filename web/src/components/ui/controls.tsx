@@ -73,7 +73,7 @@ export function DateInput({ value, min, max, onChange, ariaLabel }: { value: str
 
 export function Segmented<T extends string>({ value, options, onChange, ariaLabel }: { value: T; options: { value: T; label: string }[]; onChange: (v: T) => void; ariaLabel: string }) {
   return (
-    <div role="radiogroup" aria-label={ariaLabel} className="border-border bg-surface inline-flex h-9 w-fit rounded-xl border p-0.5">
+    <div role="radiogroup" aria-label={ariaLabel} className="border-border bg-surface inline-flex h-9 w-fit max-w-full overflow-x-auto rounded-xl border p-0.5 [scrollbar-width:none]">
       {options.map((o) => (
         <button
           key={o.value}
@@ -81,7 +81,7 @@ export function Segmented<T extends string>({ value, options, onChange, ariaLabe
           role="radio"
           aria-checked={value === o.value}
           onClick={() => onChange(o.value)}
-          className={`rounded-lg px-3 text-sm whitespace-nowrap ${value === o.value ? "bg-accent text-on-accent font-medium" : "text-ink-2 hover:bg-hover"}`}
+          className={`shrink-0 rounded-lg px-3 text-sm whitespace-nowrap ${value === o.value ? "bg-accent text-on-accent font-medium" : "text-ink-2 hover:bg-hover"}`}
         >
           {o.label}
         </button>
