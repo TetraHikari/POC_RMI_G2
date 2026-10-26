@@ -84,22 +84,6 @@ export const en = {
     driversTitle: "What drives each screen's SEI",
     driversDesc: "SEI ≈ foot traffic × exposure rate. Separate charts because they're on different scales.",
     hours: "Hours",
-    guide: {
-      title: "How to read SEI",
-      formulaTitle: "How it's calculated",
-      formula: "SEI = exposure events ÷ store hours observed",
-      example: (screen: string, events: string, hours: number, sei: string) =>
-        `Example: ${screen} had ${events} exposure events over ${hours} store hours in the current selection → SEI = ${sei} per hour.`,
-      windowTitle: "Why the same hours matter",
-      window:
-        "Traffic swings a lot through the day (lunch and evening peaks). Every screen is measured over the same dates and hours, so no screen looks better just because it was measured at a busy time. The filters above apply one window to all screens.",
-      ciTitle: "What the line around each dot means",
-      ci: "It's the 95% confidence interval — the range the screen's true SEI most likely falls in. When two screens' lines overlap, the data can't yet say which one is really better.",
-      vsTitle: "SEI vs exposure rate",
-      vs: "SEI measures volume: how many views a screen delivers per hour — what advertisers pay for. Exposure rate measures efficiency: the share of passers-by who actually look. A busy entrance can have a high SEI but a low rate; a quiet checkout the opposite. SEI ≈ foot traffic per hour × exposure rate.",
-      useTitle: "How CP Axtra can use it",
-      use: "Rank screens by SEI to set tiered ad prices (premium for the top screens) and to decide where new screens should go. This is the post-POC pricing step, done only after the POC accuracy checks pass.",
-    },
     tableLabel: "Table view — SEI ranking",
   },
   trends: {

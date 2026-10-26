@@ -15,7 +15,7 @@ npm run lint
 | Route | What it shows |
 |---|---|
 | `/` | Overview — KPI tiles, SEI by screen, exposure by hour of day |
-| `/ranking` | SEI ranking with 95% bootstrap intervals, how to read SEI, drivers |
+| `/ranking` | SEI ranking with 95% bootstrap intervals, drivers |
 | `/trends` | Daily lines per screen for a chosen metric, hour × weekday heatmap |
 
 All filters live in the URL (`?screens=1,3&from=2026-10-12&days=weekend`), so views

@@ -2,7 +2,6 @@ import { BarList } from "@/components/charts/BarList";
 import { DotRangePlot } from "@/components/charts/DotRangePlot";
 import { MetricExplainer } from "@/components/explainers/MetricExplainer";
 import { ScreenFilters } from "@/components/filters/ScreenFilters";
-import { SeiGuide } from "@/components/explainers/SeiGuide";
 import { ChartCard, DataTable, Empty, PageHeader, Section, TableView } from "@/components/ui/primitives";
 import { screenSummary } from "@/lib/analytics";
 import type { SearchParams } from "@/lib/filters";
@@ -58,8 +57,6 @@ export default async function RankingPage({ searchParams }: { searchParams: Prom
           }))}
         />
       </ChartCard>
-
-      <SeiGuide summary={summary} labels={labels} t={t} />
 
       <Section title={T.driversTitle} description={T.driversDesc}>
         <div className="grid gap-3 md:grid-cols-3">
