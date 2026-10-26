@@ -8,10 +8,6 @@ export const en = {
     trends: "Trends",
   },
   sidebar: {
-    mockPrefix: "Showing",
-    mockSep: ".", // punctuation after "mock data" (Thai uses none)
-    mockData: "mock data",
-    mockSuffix: "Set RMI_DATA_SOURCE=postgres once the DB is wired up.",
     theme: "Theme",
     themes: { system: "System", light: "Light", dark: "Dark" },
     language: "Language",

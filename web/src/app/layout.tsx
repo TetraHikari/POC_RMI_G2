@@ -4,7 +4,6 @@ import { Suspense } from "react";
 import { I18nProvider } from "@/components/i18n/I18nProvider";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { TopBar } from "@/components/layout/TopBar";
-import { getDataSource } from "@/lib/data";
 import { getI18n } from "@/lib/i18n/server";
 
 import "./globals.css";
@@ -19,7 +18,6 @@ const themeScript = `try{var t=localStorage.getItem("rmi-theme");if(t)document.d
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const { locale } = await getI18n();
-  const source = getDataSource().name;
   return (
     <html lang={locale} suppressHydrationWarning>
       <head>
@@ -34,7 +32,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             </Suspense>
             <main className="min-w-0 flex-1 px-4 pt-5 pb-24 md:px-8 md:py-6">
               <div className="mx-auto max-w-7xl">
-                <TopBar source={source} />
+                <TopBar />
                 {children}
               </div>
             </main>

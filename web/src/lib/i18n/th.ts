@@ -10,10 +10,6 @@ export const th: Dict = {
     trends: "แนวโน้ม",
   },
   sidebar: {
-    mockPrefix: "กำลังแสดง",
-    mockSep: "", // punctuation after "mock data" (Thai uses none)
-    mockData: "ข้อมูลจำลอง",
-    mockSuffix: "ตั้งค่า RMI_DATA_SOURCE=postgres เมื่อเชื่อมต่อฐานข้อมูลแล้ว",
     theme: "ธีม",
     themes: { system: "ตามระบบ", light: "สว่าง", dark: "มืด" },
     language: "ภาษา",
