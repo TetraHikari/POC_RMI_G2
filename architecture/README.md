@@ -1,5 +1,13 @@
 # Architecture
 
+![Tech stack](tech-stack.png)
+
+![Deployment](deployment.png)
+
+`tech-stack.png` and `deployment.png` are PNG exports of the two pages of `tech-stack.drawio`
+(re-export them after editing the diagram).
+
+
 - `tech-stack.drawio` — two pages (tabs at the bottom in draw.io):
   - **Tech stack** — data flow from capture to dashboard, colour-coded by status
     (green = built, amber = prototype / mock data, grey dashed = planned, blue = existing in store).

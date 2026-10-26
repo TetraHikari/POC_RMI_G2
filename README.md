@@ -22,6 +22,12 @@ Dashboard on mock data (Next.js, English / Thai, light / dark).
 |---|---|
 | ![SEI explainer popup](docs/screenshots/explainer-sei.png) | <img src="docs/screenshots/mobile.png" alt="Overview on a phone" width="260"> |
 
+## Architecture
+
+![Tech stack](architecture/tech-stack.png)
+
+More in [architecture/](architecture/README.md) — including the deployment diagram (one on-prem server per branch).
+
 ## Repository layout
 
 ```
