@@ -92,7 +92,7 @@ export function MetricExplainer({ kind }: { kind: ExplainerKind }) {
         onPointerEnter={hoverOpen}
         onPointerLeave={hoverClose}
         className={`ml-1 inline-flex size-4 items-center justify-center rounded-full border text-[10px] leading-none transition-colors ${
-          open ? "border-accent bg-accent text-surface" : "border-axis text-muted hover:border-accent hover:text-accent"
+          open ? "border-accent bg-accent text-surface in-[.on-accent]:border-white in-[.on-accent]:bg-white in-[.on-accent]:text-accent" : "border-axis text-muted hover:border-accent hover:text-accent in-[.on-accent]:border-white/80 in-[.on-accent]:text-white in-[.on-accent]:hover:bg-white/20"
         }`}
       >
         i

@@ -84,7 +84,7 @@ export function Kpi({
   return (
     <div
       className={`shadow-card flex flex-col rounded-2xl border p-4 ${
-        primary ? "bg-accent text-on-accent border-transparent" : "border-border bg-surface text-ink"
+        primary ? "on-accent bg-accent text-on-accent border-transparent" : "border-border bg-surface text-ink"
       }`}
     >
       {icon && (
