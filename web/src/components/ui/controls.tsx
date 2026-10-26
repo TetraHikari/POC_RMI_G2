@@ -35,7 +35,7 @@ export function Field({ label, children }: { label: string; children: React.Reac
 }
 
 const inputCls =
-  "border-border bg-surface text-ink h-9 rounded-xl border px-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]";
+  "border-border bg-surface text-ink h-9 rounded-xl border px-3 text-sm transition-[border-color,box-shadow] duration-200 outline-none hover:border-[var(--axis)] focus-visible:ring-2 focus-visible:ring-[var(--accent)]";
 
 export function Select<T extends string | number>({
   value,
@@ -81,7 +81,7 @@ export function Segmented<T extends string>({ value, options, onChange, ariaLabe
           role="radio"
           aria-checked={value === o.value}
           onClick={() => onChange(o.value)}
-          className={`shrink-0 rounded-lg px-3 text-sm whitespace-nowrap ${value === o.value ? "bg-accent text-on-accent font-medium" : "text-ink-2 hover:bg-hover"}`}
+          className={`shrink-0 rounded-lg px-3 text-sm whitespace-nowrap transition-colors duration-200 ${value === o.value ? "bg-accent text-on-accent font-medium" : "text-ink-2 hover:bg-hover"}`}
         >
           {o.label}
         </button>
@@ -129,14 +129,14 @@ export function MultiSelect({
     <div ref={ref} className="relative">
       <button type="button" aria-expanded={open} onClick={() => setOpen((o) => !o)} className={`${inputCls} flex w-full items-center justify-between gap-2 text-left`}>
         <span className={`truncate ${selected.length ? "" : "text-muted"}`}>{summary}</span>
-        <span aria-hidden className="text-muted text-xs">
+        <span aria-hidden className={`text-muted text-xs transition-transform duration-200 ${open ? "rotate-180" : ""}`}>
           ▾
         </span>
       </button>
       {open && (
-        <div className="border-border bg-raised absolute z-20 mt-1 w-full min-w-56 rounded-xl border p-1 shadow-lg">
+        <div className="anim-pop border-border bg-raised absolute z-20 mt-1 w-full min-w-56 rounded-xl border p-1 shadow-lg">
           {options.map((o) => (
-            <label key={o.value} className="text-ink hover:bg-hover flex cursor-pointer items-center gap-2 rounded px-2 py-1.5 text-sm">
+            <label key={o.value} className="text-ink hover:bg-hover flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1.5 text-sm transition-colors">
               <input type="checkbox" className="accent-[var(--accent)]" checked={selected.includes(o.value)} onChange={() => toggle(o.value)} />
               {o.label}
             </label>

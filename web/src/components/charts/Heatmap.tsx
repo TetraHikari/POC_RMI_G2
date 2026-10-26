@@ -55,6 +55,8 @@ export function Heatmap({
                       width={cellW - 2}
                       height={cellH - 2}
                       rx={2}
+                      className="anim-fade"
+                      style={{ ["--i" as string]: ri + ci }}
                       fill={v === null ? "var(--grid)" : stepColor(bin(v))}
                       onMouseMove={(e) => show(e, <TipRow label={`${r} ${c}`} value={v === null ? t.common.noDataCell : fmt(v)} />)}
                     />

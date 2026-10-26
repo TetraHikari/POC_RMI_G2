@@ -60,7 +60,7 @@ export default async function RankingPage({ searchParams }: { searchParams: Prom
       </ChartCard>
 
       <Section title={T.driversTitle} description={T.driversDesc}>
-        <div className="grid gap-3 md:grid-cols-3">
+        <div className="stagger grid gap-3 md:grid-cols-3">
           {drivers.map((d) => (
             <ChartCard key={d.key} title={d.title}>
               <BarList rows={summary.map((r) => ({ label: labels.get(r.screenId)!, value: r[d.key], display: d.fmt(r[d.key]) }))} />

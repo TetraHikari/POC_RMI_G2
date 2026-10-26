@@ -49,7 +49,7 @@ export default async function OverviewPage({ searchParams }: { searchParams: Pro
   return (
     <>
       {header}
-      <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-5">
+      <div className="stagger mt-4 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-5">
         <Kpi primary icon="screen" label={t.metrics.avgSei} value={`${fmt1(ev / hourly.length)} ${t.units.perHour}`} info={<MetricExplainer kind="sei" />} footer={t.overview.kpiFoot.sei} />
         <Kpi icon="users" label={t.metrics.footTraffic} value={fmtInt(ft)} info={<MetricExplainer kind="footTraffic" />} footer={t.overview.kpiFoot.footTraffic} />
         <Kpi icon="eye" label={t.metrics.exposureEvents} value={fmtInt(ev)} info={<MetricExplainer kind="exposure" />} footer={t.overview.kpiFoot.exposureEvents} />
@@ -57,7 +57,7 @@ export default async function OverviewPage({ searchParams }: { searchParams: Pro
         <Kpi icon="clock" label={t.metrics.medianDwell} value={fmtSec(median(hourly.map((h) => h.medianDwellS)), locale)} info={<MetricExplainer kind="dwell" />} footer={t.overview.kpiFoot.dwell} />
       </div>
 
-      <div className="mt-4 grid gap-4 lg:grid-cols-[1.7fr_1fr]">
+      <div className="stagger mt-4 grid gap-4 lg:grid-cols-[1.7fr_1fr]">
         <ChartCard
           title={t.overview.byHour}
           subtitle={t.overview.byHourDesc}

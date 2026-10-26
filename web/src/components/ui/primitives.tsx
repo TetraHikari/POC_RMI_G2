@@ -40,7 +40,7 @@ export function Section({ title, description, children, actions }: { title: Reac
 }
 
 export function Card({ children, className = "" }: { children: ReactNode; className?: string }) {
-  return <div className={`border-border bg-surface shadow-card rounded-2xl border ${className}`}>{children}</div>;
+  return <div className={`border-border bg-surface shadow-card rounded-2xl border transition-shadow duration-300 hover:shadow-lg ${className}`}>{children}</div>;
 }
 
 export function ChartCard({ title, subtitle, actions, children, className = "" }: { title?: ReactNode; subtitle?: ReactNode; actions?: ReactNode; children: ReactNode; className?: string }) {
@@ -83,7 +83,7 @@ export function Kpi({
 }) {
   return (
     <div
-      className={`shadow-card flex flex-col rounded-2xl border p-4 ${
+      className={`shadow-card flex flex-col rounded-2xl border p-4 transition-[translate,box-shadow] duration-300 ease-out hover:-translate-y-0.5 hover:shadow-lg ${
         primary ? "on-accent bg-accent text-on-accent border-transparent" : "border-border bg-surface text-ink"
       }`}
     >
@@ -164,7 +164,10 @@ export function DataTable<T>({ rows, columns, maxHeight }: { rows: T[]; columns:
 export function TableView({ label, children }: { label: string; children: ReactNode }) {
   return (
     <details className="group border-border bg-surface shadow-card mt-4 rounded-2xl border">
-      <summary className="text-ink-2 hover:bg-hover cursor-pointer rounded-2xl px-5 py-3 text-sm font-medium select-none">{label}</summary>
+      <summary className="text-ink-2 hover:bg-hover flex cursor-pointer list-none items-center gap-2 rounded-2xl px-5 py-3 text-sm font-medium transition-colors select-none [&::-webkit-details-marker]:hidden">
+        <span aria-hidden className="text-muted inline-block text-[10px] transition-transform duration-300 group-open:rotate-90">▶</span>
+        {label}
+      </summary>
       <div className="px-5 pb-5">{children}</div>
     </details>
   );

@@ -45,7 +45,7 @@ export function Sidebar() {
                 >
                   <Icon name={it.icon} />
                 </span>
-                <span className={`text-center text-[11px] leading-tight ${active ? "text-ink font-semibold" : "text-muted group-hover:text-ink-2"}`}>{it.label}</span>
+                <span className={`text-center text-[11px] leading-tight transition-colors ${active ? "text-ink font-semibold" : "text-muted group-hover:text-ink-2"}`}>{it.label}</span>
               </Link>
             );
           })}
@@ -63,9 +63,9 @@ export function Sidebar() {
               key={it.href}
               href={href(it.href)}
               aria-current={active ? "page" : undefined}
-              className={`flex flex-col items-center gap-0.5 rounded-xl py-1 text-[11px] ${active ? "text-accent font-semibold" : "text-muted"}`}
+              className={`flex flex-col items-center gap-0.5 rounded-xl py-1 text-[11px] transition-colors duration-200 ${active ? "text-accent font-semibold" : "text-muted"}`}
             >
-              <span className={`flex h-7 w-12 items-center justify-center rounded-full ${active ? "bg-accent-soft" : ""}`}>
+              <span className={`flex h-7 w-12 items-center justify-center rounded-full transition-[background-color,transform] duration-300 ${active ? "bg-accent-soft scale-100" : "scale-90"}`}>
                 <Icon name={it.icon} size={20} />
               </span>
               {it.label}

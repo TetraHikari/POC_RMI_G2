@@ -55,6 +55,8 @@ export function DotRangePlot({ rows, series, xLabel, fmtKey = "1dp" }: { rows: D
               return (
                 <g
                   key={r.label}
+                  className="anim-fade"
+                  style={{ ["--i" as string]: 6 + i * 8 }}
                   onMouseMove={(e) =>
                     show(
                       e,
@@ -85,7 +87,7 @@ export function DotRangePlot({ rows, series, xLabel, fmtKey = "1dp" }: { rows: D
                           <line x1={x(v.low)} x2={x(v.high)} y1={cy + dy} y2={cy + dy} stroke={s.color} strokeWidth={2} strokeLinecap="round" />
                         )}
                         {s.shape === "dot" ? (
-                          <circle cx={x(v.value)} cy={cy + dy} r={5.5} fill={s.color} stroke="var(--surface)" strokeWidth={2} />
+                          <circle cx={x(v.value)} cy={cy + dy} r={5.5} fill={s.color} stroke="var(--surface)" strokeWidth={2} style={{ transition: "cx 0.5s var(--ease-out)" }} />
                         ) : (
                           <rect x={x(v.value) - 5} y={cy + dy - 5} width={10} height={10} transform={`rotate(45 ${x(v.value)} ${cy + dy})`} fill={s.color} stroke="var(--surface)" strokeWidth={2} />
                         )}

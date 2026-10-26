@@ -79,7 +79,7 @@ export function LineSeriesChart({
         />
         {area &&
           series.map((s) => (
-            <Area key={`a-${s.key}`} dataKey={s.key} type="monotone" stroke="none" fill={`url(#fill-${s.key})`} isAnimationActive={false} activeDot={false} tooltipType="none" />
+            <Area key={`a-${s.key}`} dataKey={s.key} type="monotone" stroke="none" fill={`url(#fill-${s.key})`} animationDuration={900} animationEasing="ease-out" activeDot={false} tooltipType="none" />
           ))}
         {series.map((s) => (
           <Line
@@ -90,7 +90,8 @@ export function LineSeriesChart({
             strokeWidth={2}
             dot={markers ? { r: 3.5, fill: s.color, stroke: "var(--surface)", strokeWidth: 2 } : false}
             activeDot={{ r: 5, stroke: "var(--surface)", strokeWidth: 2 }}
-            isAnimationActive={false}
+            animationDuration={900}
+            animationEasing="ease-out"
           />
         ))}
       </ComposedChart>

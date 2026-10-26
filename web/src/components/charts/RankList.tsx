@@ -19,10 +19,10 @@ export function RankList({ rows, unitLabel, barColor = "var(--series-1)" }: { ro
   const { boxRef, show, hide, layer } = useHoverTip();
   return (
     <div ref={boxRef} className="relative flex flex-col gap-1" onMouseLeave={hide}>
-      {rows.map((r) => (
+      {rows.map((r, i) => (
         <div
           key={r.key}
-          className="hover:bg-hover flex items-center gap-3 rounded-xl px-2 py-2.5"
+          className="hover:bg-hover flex items-center gap-3 rounded-xl px-2 py-2.5 transition-colors"
           onMouseMove={(e) => show(e, <TipRow color={r.color} label={r.label} value={`${r.display}${unitLabel ? ` ${unitLabel}` : ""}`} />)}
         >
           <span className="bg-accent-soft text-accent tabular flex size-8 shrink-0 items-center justify-center rounded-lg text-xs font-bold">#{r.rank}</span>
@@ -42,7 +42,7 @@ export function RankList({ rows, unitLabel, barColor = "var(--series-1)" }: { ro
               {r.detail && <span className="tabular shrink-0">{r.detail}</span>}
             </div>
             <div className="bg-hover mt-2 h-1.5 overflow-hidden rounded-full">
-              <div className="h-full rounded-full" style={{ width: `${(r.value / max) * 100}%`, background: barColor }} />
+              <div className="anim-grow h-full rounded-full" style={{ width: `${(r.value / max) * 100}%`, background: barColor, ["--i" as string]: i }} />
             </div>
           </div>
         </div>

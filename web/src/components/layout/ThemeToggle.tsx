@@ -37,7 +37,7 @@ export function ThemeToggle() {
           role="radio"
           aria-checked={mode === m}
           onClick={() => pick(m)}
-          className={`rounded-full px-2 py-1 ${mode === m ? "bg-accent text-on-accent font-medium" : "text-muted hover:text-ink-2"}`}
+          className={`rounded-full transition-colors duration-200 px-2 py-1 ${mode === m ? "bg-accent text-on-accent font-medium" : "text-muted hover:text-ink-2"}`}
         >
           {t.sidebar.themes[m]}
         </button>
