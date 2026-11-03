@@ -1,0 +1,34 @@
+sample_fps: 5
+detector: yolo26n
+weights_dir: "pipeline/weights"
+imgsz: 416
+conf: 0.30
+pose: yolo26n-pose
+pose_conf: 0.35
+keypoint_conf: 0.20
+min_head_px: 6
+match_iou: 0.30
+posture_still_px: 50
+posture_window_s: 2.0
+posture_head_conf: 0.20
+zone_radius_m: 4
+facing_tolerance_deg: 60
+min_exposure_s: 1.0
+qualified_view_mode: "unique_shopper"  # unique_shopper | exposure_run
+max_gap_s: 0.4
+require_front_half: true
+pixels_per_meter: 100
+videos:
+  - file: "data/train/Cam03.mp4"
+    calib: "pipeline/calibration/cam03.json"
+    screen_code: "CAM-03"
+    screen_name: "Camera-03"
+    screen_location: "Camera-03"
+    iab_zone: "in_aisle"
+  - file: "data/train/Cam04.mp4"
+    calib: "pipeline/calibration/cam04.json"
+    screen_code: "CAM-04"
+    screen_name: "Camera-04"
+    screen_location: "Camera-04"
+    iab_zone: "in_aisle"
+out_dir: "artifacts/pipeline"

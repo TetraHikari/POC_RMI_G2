@@ -1,0 +1,1 @@
+{"clip": "cctv01-dev-sample", "note": "Toy GT format example mapping to gt_persons + gt_facing_intervals. Times are seconds from clip start.", "persons": [{"annotator": "ann01", "entry_s": 1.0, "exit_s": 6.5, "facing": [{"end_s": 3.0, "start_s": 2.0}], "screen": "A"}]}

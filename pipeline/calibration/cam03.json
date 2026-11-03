@@ -1,0 +1,24 @@
+{
+  "camera": "Camera-03",
+  "image_size": [1280, 720],
+  "combined_faces": true,
+  "faces": [
+    {
+      "name": "left_blue",
+      "screen_polygon": [[735, 205], [850, 210], [852, 392], [737, 387]],
+      "screen_foot_px": [850, 530],
+      "screen_normal_deg": 270,
+      "pixels_per_meter": 100
+    },
+    {
+      "name": "right_orange",
+      "screen_polygon": [[858, 195], [980, 200], [980, 385], [858, 380]],
+      "screen_foot_px": [850, 530],
+      "screen_normal_deg": 90,
+      "pixels_per_meter": 100
+    }
+  ],
+  "zone_radius_m": 4,
+  "facing_tolerance_deg": 60,
+  "note": "Sample-local geometry re-traced from the 30 s Cam03 clip. The two pillar faces are treated as one combined screen."
+}

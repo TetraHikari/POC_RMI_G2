@@ -1,0 +1,17 @@
+{
+  "camera": "Camera-04",
+  "image_size": [1280, 720],
+  "combined_faces": false,
+  "faces": [
+    {
+      "name": "drink",
+      "screen_polygon": [[640, 175], [772, 175], [772, 355], [640, 355]],
+      "screen_foot_px": [706, 620],
+      "screen_normal_deg": 270,
+      "pixels_per_meter": 100
+    }
+  ],
+  "zone_radius_m": 4,
+  "facing_tolerance_deg": 60,
+  "note": "Sample-local geometry re-traced from the 30 s Cam04 clip. Single beverage screen facing the left aisle."
+}
