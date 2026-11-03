@@ -1,0 +1,17 @@
+[project]
+name = "poc-rmi-g2"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "lap",
+    "matplotlib",
+    "numpy",
+    "opencv-python-headless",
+    "pandas>=3.1.0",
+    "pydantic>=2.14.2",
+    "pyyaml",
+    "scikit-learn",
+    "ultralytics",
+]

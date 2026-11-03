@@ -1,0 +1,50 @@
+{
+  "facing_tolerance_deg": 60,
+  "homography_3x3": [
+    [
+      0.01,
+      0.0,
+      -6.0
+    ],
+    [
+      0.0,
+      0.01,
+      -3.0
+    ],
+    [
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "image_size": [
+    1280,
+    720
+  ],
+  "pixels_per_meter": 100,
+  "screen_foot_px": [
+    745,
+    668
+  ],
+  "screen_normal_deg": 270,
+  "screen_polygon": [
+    [
+      700,
+      198
+    ],
+    [
+      788,
+      202
+    ],
+    [
+      790,
+      343
+    ],
+    [
+      702,
+      340
+    ]
+  ],
+  "zone_radius_m": 4,
+  "note": "sample-local geometry, re-traced 2026-10-31 from f=70 overlay; not a fixed camera/site."
+}
