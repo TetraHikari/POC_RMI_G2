@@ -10,7 +10,7 @@ import { loadScreenContext } from "@/lib/page-context";
 
 export default async function RankingPage({ searchParams }: { searchParams: Promise<SearchParams> }) {
   const ctx = await loadScreenContext(searchParams);
-  const { hourly, labels, t } = ctx;
+  const { hourly, visits, labels, t } = ctx;
   const T = t.ranking;
 
   const header = (
@@ -27,7 +27,7 @@ export default async function RankingPage({ searchParams }: { searchParams: Prom
       </>
     );
 
-  const summary = screenSummary(hourly);
+  const summary = screenSummary(hourly, visits);
 
   const drivers = [
     { key: "footTrafficPerH", title: t.metrics.footTrafficPerHour, fmt: (v: number) => fmtInt(v) },
@@ -46,7 +46,12 @@ export default async function RankingPage({ searchParams }: { searchParams: Prom
             <MetricExplainer kind="sei" />
           </span>
         }
-        subtitle={t.metrics.exposurePerHour}
+        subtitle={
+          <span className="inline-flex items-center">
+            {t.metrics.exposurePerHour} · {T.ciLegend}
+            <MetricExplainer kind="ci" />
+          </span>
+        }
       >
         <DotRangePlot
           xLabel={t.metrics.exposurePerHour}
@@ -76,7 +81,13 @@ export default async function RankingPage({ searchParams }: { searchParams: Prom
             { key: "rank", header: t.overview.rank, render: (r) => r.rank, align: "right" },
             { key: "screen", header: t.common.screen, render: (r) => labels.get(r.screenId) },
             { key: "sei", header: t.metrics.seiPerH, render: (r) => fmt1(r.sei), align: "right" },
-            { key: "ci", header: t.common.ci95, render: (r) => `${fmt1(r.seiLow)}–${fmt1(r.seiHigh)}`, align: "right" },
+            { key: "ci", header: (
+              <span className="inline-flex items-center">
+                {t.common.ci95}
+                <MetricExplainer kind="ci" />
+              </span>
+            ),
+            render: (r) => `${fmt1(r.seiLow)}–${fmt1(r.seiHigh)}`, align: "right" },
             { key: "hours", header: T.hours, render: (r) => r.hours, align: "right" },
           ]}
         />

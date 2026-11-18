@@ -16,7 +16,7 @@ export interface Screen {
   name: string;
   label: string;
   iabZone: string;
-  cameraMount: "overhead" | "elevated";
+  cameraMount?: "overhead" | "elevated";
 }
 
 /** v_hourly_screen_metrics */
@@ -26,8 +26,16 @@ export interface HourlyMetric {
   footTraffic: number;
   exposureEvents: number;
   exposureRate: number;
-  medianDwellS: number;
-  medianExposureS: number;
+  medianDwellS: number | null; // null = no visits that hour
+  medianExposureS: number | null; // null = no exposures that hour
+}
+
+/** One visit to a screen's zone (shopper_screen_events row), bucketed by store-local hour. */
+export interface Visit {
+  screenId: number;
+  hourStart: string; // same bucket as HourlyMetric.hourStart
+  dwellS: number;
+  exposed: boolean;
 }
 
 export type Split = "dev" | "test";
@@ -105,6 +113,8 @@ export interface DataSource {
   stores(): Promise<Store[]>;
   screens(): Promise<Screen[]>;
   hourly(): Promise<HourlyMetric[]>;
+  /** Per-visit rows for exact dwell medians; [] when the source only has hourly data. */
+  visits(): Promise<Visit[]>;
   clips(): Promise<Clip[]>;
   clipScores(): Promise<ClipScore[]>;
   errors(): Promise<ErrorTag[]>;

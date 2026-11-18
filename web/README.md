@@ -60,14 +60,19 @@ so pages render server-side in the chosen language (no URL prefix).
   names from the data source are translated via `names` in the dictionaries when a mapping exists.
 - Default language: `DEFAULT_LOCALE` in `lib/i18n/index.ts`.
 
-## Connecting PostgreSQL later
+## PostgreSQL
 
-1. Add `src/lib/data/postgres.ts` exporting a `DataSource` (same method names and row shapes
-   as `types.ts`), backed by SQL views such as `v_hourly_screen_metrics`.
-2. Register it in `src/lib/data/index.ts`.
-3. Run with `RMI_DATA_SOURCE=postgres`.
+```bash
+cp .env.template .env                 # repo root: set POSTGRES_PASSWORD
+cp web/.env.template web/.env.local   # put the same password in DATABASE_URL
+docker compose up -d                  # Postgres 17 + schema + October mock events (db/)
+```
 
-Pages, charts and `analytics.ts` don't change.
+`RMI_DATA_SOURCE` in `web/.env.local` picks `postgres` or `mock` (the default when unset).
+
+`src/lib/data/postgres.ts` reads `shopper_screen_events`. Screens, the date range and store hours
+come from the rows, so a new `screen_id` shows up on the dashboard automatically. Validation data
+(clips, scores) isn't in that schema, so those methods return empty lists.
 
 ## Notes
 

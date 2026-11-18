@@ -27,7 +27,7 @@ export function useLoopTime(duration: number, active: boolean, still: number): n
     let raf = 0;
     const start = performance.now();
     const tick = (now: number) => {
-      setT(((now - start) / 1000) % duration);
+      setT((Math.max(0, now - start) / 1000) % duration); // rAF's frame time can be slightly before `start`
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);

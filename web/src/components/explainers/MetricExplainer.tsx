@@ -6,11 +6,12 @@ import { createPortal } from "react-dom";
 import { useI18n } from "@/components/i18n/I18nProvider";
 
 import { DwellScene, ExposureScene, FootTrafficScene } from "./scenes";
+import { CiScene } from "./CiScene";
 import { SeiScene } from "./SeiScene";
 
-export type ExplainerKind = "footTraffic" | "dwell" | "exposure" | "sei";
+export type ExplainerKind = "footTraffic" | "dwell" | "exposure" | "sei" | "ci";
 
-const SCENES = { footTraffic: FootTrafficScene, dwell: DwellScene, exposure: ExposureScene, sei: SeiScene };
+const SCENES = { footTraffic: FootTrafficScene, dwell: DwellScene, exposure: ExposureScene, sei: SeiScene, ci: CiScene };
 const PANEL_W = 320;
 
 /**

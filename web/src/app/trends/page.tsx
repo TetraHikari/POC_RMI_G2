@@ -3,7 +3,7 @@ import { LineSeriesChart } from "@/components/charts/LineSeriesChart";
 import { ParamSegmented, ParamSelect } from "@/components/filters/ParamControls";
 import { ScreenFilters } from "@/components/filters/ScreenFilters";
 import { ChartCard, DataTable, Empty, Legend, LegendItem, PageHeader, TableView } from "@/components/ui/primitives";
-import { groupBy, median } from "@/lib/analytics";
+import { groupBy, medianDwell, type VisitIndex } from "@/lib/analytics";
 import { screenColor } from "@/lib/colors";
 import type { HourlyMetric } from "@/lib/data/types";
 import { one, type SearchParams } from "@/lib/filters";
@@ -15,19 +15,19 @@ const METRIC_FMT = { sei: "1dp", ft: "int", rate: "pct1", dwell: "s1" } as const
 type MetricKey = keyof typeof METRIC_FMT;
 
 /** Aggregate a group of hourly rows into one value for the chosen metric. */
-function aggregate(rows: HourlyMetric[], m: MetricKey): number {
+function aggregate(rows: HourlyMetric[], m: MetricKey, visits: VisitIndex): number {
   if (m === "rate") {
     const ft = rows.reduce((a, h) => a + h.footTraffic, 0);
     return ft ? rows.reduce((a, h) => a + h.exposureEvents, 0) / ft : 0; // ratio of sums, not mean of ratios
   }
-  if (m === "dwell") return median(rows.map((h) => h.medianDwellS));
+  if (m === "dwell") return medianDwell(rows, visits);
   const vals = rows.map((h) => (m === "sei" ? h.exposureEvents : h.footTraffic));
   return vals.reduce((a, b) => a + b, 0) / vals.length;
 }
 
 export default async function TrendsPage({ searchParams }: { searchParams: Promise<SearchParams> }) {
   const ctx = await loadScreenContext(searchParams);
-  const { hourly, screens, labels, filters: f, sp, t, locale } = ctx;
+  const { hourly, visits, screens, labels, filters: f, sp, t, locale } = ctx;
   const allIds = screens.map((s) => s.screenId);
 
   const metricRaw = one(sp.metric);
@@ -65,7 +65,7 @@ export default async function TrendsPage({ searchParams }: { searchParams: Promi
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([day, g]) => {
       const row: Record<string, number | string> = { x: day };
-      for (const [sid, gs] of groupBy(g, (h) => h.screenId)) row[`s${sid}`] = aggregate(gs, metric);
+      for (const [sid, gs] of groupBy(g, (h) => h.screenId)) row[`s${sid}`] = aggregate(gs, metric, visits);
       return row;
     });
   const lineSeries = f.screenIds.map((id) => ({ key: `s${id}`, label: labels.get(id)!, color: screenColor(id, allIds) }));
@@ -74,7 +74,7 @@ export default async function TrendsPage({ searchParams }: { searchParams: Promi
   const hours = [...new Set(heatRows.map((h) => hourOf(h.hourStart)))].sort((a, b) => a - b);
   const cell = groupBy(heatRows, (h) => `${dayOfWeek(h.hourStart)}-${hourOf(h.hourStart)}`);
   const days = [...new Set(heatRows.map((h) => dayOfWeek(h.hourStart)))].sort();
-  const values = days.map((d) => hours.map((h) => (cell.has(`${d}-${h}`) ? aggregate(cell.get(`${d}-${h}`)!, metric) : null)));
+  const values = days.map((d) => hours.map((h) => (cell.has(`${d}-${h}`) ? aggregate(cell.get(`${d}-${h}`)!, metric, visits) : null)));
   const dayNames = weekdays(locale);
   const fmt = formatter(fmtKey, locale);
   const fmtDayCell = formatter("day", locale);

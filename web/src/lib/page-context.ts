@@ -1,5 +1,6 @@
 import "server-only";
 
+import { indexVisits } from "@/lib/analytics";
 import { getDataSource } from "@/lib/data";
 import { applyFilters, dataRange, parseFilters, type SearchParams } from "@/lib/filters";
 import { screenLabel, tName } from "@/lib/i18n";
@@ -9,13 +10,14 @@ import { getI18n } from "@/lib/i18n/server";
 export async function loadScreenContext(searchParams: Promise<SearchParams>) {
   const [sp, { locale, t }] = await Promise.all([searchParams, getI18n()]);
   const src = getDataSource();
-  const [rawStores, rawScreens, hourlyAll] = await Promise.all([src.stores(), src.screens(), src.hourly()]);
+  const [rawStores, rawScreens, hourlyAll, visitRows] = await Promise.all([src.stores(), src.screens(), src.hourly(), src.visits()]);
+  const visits = indexVisits(visitRows); // looked up by the filtered hourly rows, so no separate filtering
   const stores = rawStores.map((s) => ({ ...s, storeName: tName(t.names.stores, s.storeName) }));
   const screens = rawScreens.map((s) => ({ ...s, label: screenLabel(t, s), iabZone: tName(t.names.zones, s.iabZone) }));
   const filters = parseFilters(sp, screens, hourlyAll);
   const hourly = applyFilters(hourlyAll, filters);
   const labels = new Map(screens.map((s) => [s.screenId, s.label]));
-  return { sp, src, locale, t, stores, screens, labels, hourly, filters, range: dataRange(hourlyAll) };
+  return { sp, src, locale, t, stores, screens, labels, hourly, visits, filters, range: dataRange(hourlyAll) };
 }
 
 export type ScreenContext = Awaited<ReturnType<typeof loadScreenContext>>;

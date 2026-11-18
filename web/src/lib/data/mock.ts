@@ -313,6 +313,7 @@ export const mockSource: DataSource = {
   stores: async () => STORES,
   screens: async () => screens(),
   hourly: async () => hourly(),
+  visits: async () => [], // hourly medians only
   clips: async () => clips(),
   clipScores: async () => clipScores(),
   errors: async () => errors(),

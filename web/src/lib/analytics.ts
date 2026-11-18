@@ -1,6 +1,6 @@
 /** Metric calculations shared by the pages. Pure functions; work on mock or DB rows alike. */
 import { Rng } from "@/lib/rng";
-import type { ClipScore, HourlyMetric, TrackPoint } from "@/lib/data/types";
+import type { ClipScore, HourlyMetric, TrackPoint, Visit } from "@/lib/data/types";
 
 export type MetricKey = "ftWape" | "dwellMae" | "precision" | "recall";
 
@@ -23,9 +23,10 @@ export const TARGETS: Target[] = [
 const sum = (xs: number[]) => xs.reduce((a, b) => a + b, 0);
 const mean = (xs: number[]) => (xs.length ? sum(xs) / xs.length : NaN);
 
-export function median(xs: number[]): number {
-  if (!xs.length) return NaN;
-  const s = [...xs].sort((a, b) => a - b);
+/** Median, ignoring null (= no value, e.g. an hour with no visits). */
+export function median(xs: (number | null)[]): number {
+  const s = xs.filter((x): x is number => x != null && !Number.isNaN(x)).sort((a, b) => a - b);
+  if (!s.length) return NaN;
   const m = s.length >> 1;
   return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2;
 }
@@ -61,6 +62,26 @@ export function groupBy<T, K>(rows: T[], key: (r: T) => K): Map<K, T[]> {
   return m;
 }
 
+/** Visits grouped by screen-hour, so any set of hourly rows can find its visits. */
+export type VisitIndex = Map<string, Visit[]>;
+const visitKey = (screenId: number, hourStart: string) => `${screenId}|${hourStart}`;
+
+export function indexVisits(visits: Visit[]): VisitIndex {
+  return groupBy(visits, (v) => visitKey(v.screenId, v.hourStart));
+}
+
+/**
+ * Median dwell over every visit in these screen-hours (exposedOnly: visits with an exposure).
+ * Sources without per-visit data fall back to the median of the hourly medians, skipping empty hours.
+ */
+export function medianDwell(rows: HourlyMetric[], visits: VisitIndex, exposedOnly = false): number {
+  if (!visits.size) return median(rows.map((h) => (exposedOnly ? h.medianExposureS : h.medianDwellS)));
+  const dwells: number[] = [];
+  for (const h of rows)
+    for (const v of visits.get(visitKey(h.screenId, h.hourStart)) ?? []) if (!exposedOnly || v.exposed) dwells.push(v.dwellS);
+  return median(dwells);
+}
+
 export interface ScreenSummary {
   screenId: number;
   sei: number;
@@ -75,7 +96,7 @@ export interface ScreenSummary {
 }
 
 /** SEI (exposure events per hour) with a 95% bootstrap CI, plus supporting metrics. Sorted by SEI desc. */
-export function screenSummary(hourly: HourlyMetric[]): ScreenSummary[] {
+export function screenSummary(hourly: HourlyMetric[], visits: VisitIndex): ScreenSummary[] {
   const rows = [...groupBy(hourly, (h) => h.screenId)].map(([screenId, g]) => {
     const ev = g.map((h) => h.exposureEvents);
     const ft = sum(g.map((h) => h.footTraffic));
@@ -87,8 +108,8 @@ export function screenSummary(hourly: HourlyMetric[]): ScreenSummary[] {
       seiHigh: hi,
       footTrafficPerH: ft / g.length,
       exposureRate: ft ? sum(ev) / ft : 0,
-      medianDwellS: median(g.map((h) => h.medianDwellS)),
-      medianExposureS: median(g.map((h) => h.medianExposureS)),
+      medianDwellS: medianDwell(g, visits),
+      medianExposureS: medianDwell(g, visits, true),
       hours: g.length,
       rank: 0,
     };

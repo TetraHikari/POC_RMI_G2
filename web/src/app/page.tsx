@@ -3,7 +3,7 @@ import { LineSeriesChart } from "@/components/charts/LineSeriesChart";
 import { MetricExplainer } from "@/components/explainers/MetricExplainer";
 import { ScreenFilters } from "@/components/filters/ScreenFilters";
 import { ChartCard, DataTable, Empty, HeaderStat, Kpi, Legend, LegendItem, PageHeader, TableView } from "@/components/ui/primitives";
-import { groupBy, median, screenSummary } from "@/lib/analytics";
+import { groupBy, medianDwell, screenSummary } from "@/lib/analytics";
 import { screenColor } from "@/lib/colors";
 import type { SearchParams } from "@/lib/filters";
 import { fmt1, fmtInt, fmtPct, fmtSec } from "@/lib/format";
@@ -12,14 +12,18 @@ import { fmtDate, hourOf } from "@/lib/time";
 
 export default async function OverviewPage({ searchParams }: { searchParams: Promise<SearchParams> }) {
   const ctx = await loadScreenContext(searchParams);
-  const { hourly, screens, labels, filters: f, t, locale } = ctx;
+  const { hourly, visits, screens, labels, filters: f, t, locale } = ctx;
   const allIds = screens.map((s) => s.screenId);
+  // Store hours from the data: first hour seen → end of the last hour seen.
+  const hoursSeen = ctx.hourly.map((h) => hourOf(h.hourStart));
+  const pad = (h: number) => `${String(h).padStart(2, "0")}:00`;
+  const storeHours = hoursSeen.length ? `${pad(Math.min(...hoursSeen))}–${pad(Math.max(...hoursSeen) + 1)}` : "–";
 
   const header = (
     <>
       <PageHeader
         title={t.overview.title}
-        description={t.overview.description(f.screenIds.length)}
+        description={t.overview.description(f.screenIds.length, storeHours)}
         aside={<HeaderStat label={t.common.dataWindow} value={`${fmtDate(f.from, locale)} – ${fmtDate(f.to, locale, true)}`} />}
       />
       <ScreenFilters ctx={ctx} />
@@ -35,7 +39,7 @@ export default async function OverviewPage({ searchParams }: { searchParams: Pro
 
   const ft = hourly.reduce((a, h) => a + h.footTraffic, 0);
   const ev = hourly.reduce((a, h) => a + h.exposureEvents, 0);
-  const summary = screenSummary(hourly);
+  const summary = screenSummary(hourly, visits);
 
   const byHour = [...groupBy(hourly, (h) => hourOf(h.hourStart))]
     .sort(([a], [b]) => a - b)
@@ -54,7 +58,7 @@ export default async function OverviewPage({ searchParams }: { searchParams: Pro
         <Kpi icon="users" label={t.metrics.footTraffic} value={fmtInt(ft)} info={<MetricExplainer kind="footTraffic" />} footer={t.overview.kpiFoot.footTraffic} />
         <Kpi icon="eye" label={t.metrics.exposureEvents} value={fmtInt(ev)} info={<MetricExplainer kind="exposure" />} footer={t.overview.kpiFoot.exposureEvents} />
         <Kpi icon="percent" label={t.metrics.exposureRate} value={fmtPct(ev / ft)} hint={t.hints.exposureRate} footer={t.overview.kpiFoot.exposureRate} />
-        <Kpi icon="clock" label={t.metrics.medianDwell} value={fmtSec(median(hourly.map((h) => h.medianDwellS)), locale)} info={<MetricExplainer kind="dwell" />} footer={t.overview.kpiFoot.dwell} />
+        <Kpi icon="clock" label={t.metrics.medianDwell} value={fmtSec(medianDwell(hourly, visits), locale)} info={<MetricExplainer kind="dwell" />} footer={t.overview.kpiFoot.dwell} />
       </div>
 
       <div className="stagger mt-4 grid gap-4 lg:grid-cols-[1.7fr_1fr]">
